@@ -1,7 +1,6 @@
 const AppError = require("./../utils/newAppError");
 const catchAsync = require("./../utils/catchAsync");
 const Player = require("./../model/playerModel");
-const { queries } = require("@testing-library/react");
 
 exports.login = catchAsync(async (req, res, next) => {
   const PlayerData = req.body;
