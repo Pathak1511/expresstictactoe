@@ -11,7 +11,6 @@
   "author": "Hritik Pathak",
   "license": "ISC",
   "dependencies": {
-    "@testing-library/react": "^13.4.0",
     "body-parser": "^1.20.1",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
@@ -24,6 +23,7 @@
     "xss-clean": "^0.1.1"
   },
   "devDependencies": {
+    "@testing-library/react": "^13.4.0",
     "nodemon": "^2.0.20"
   }
 }
