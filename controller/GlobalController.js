@@ -3,7 +3,7 @@ const catchAsync = require("./../utils/catchAsync");
 const Player = require("./../model/playerModel");
 
 exports.getPlayedByMeResult = catchAsync(async (req, res, next) => {
-  const data = await Player.find({ email: req.body.email });
+  const data = await Player.find();
   res.status(200).json({
     status: "success",
     data,
@@ -116,24 +116,21 @@ const Validate = function (v) {
 exports.createPlayerAccount = catchAsync(async (req, res, next) => {
   let statusCode, status, message;
   if (!Validate(req.body.email)) {
-    statusCode = 400;
-    status = "fail";
-    message = "Invalid Email";
+    return next(new AppError("Invalid Email ID", 401));
   } else {
-    statusCode = 200;
-    status = "success";
-    message = "Congrations !!! Accounts created.";
     const player = await Player.create(req.body);
+    res.status(200).json({
+      status: "success",
+      data: player,
+      message: "Congrations !!! Accounts created.",
+    });
   }
-  res.status(statusCode).json({
-    status: `${status}`,
-    message: `${message !== "" ? message : "Alls good"}`,
-  });
 });
 
 // sending connection request same as friend request
 exports.sendRequestToOther = catchAsync(async (req, res, next) => {
   const data = req.body;
+  console.log(data);
   const myEmail = data.emailMine;
   const otherEmail = data.emailOther;
 
@@ -157,13 +154,14 @@ exports.sendRequestToOther = catchAsync(async (req, res, next) => {
   const otherQuery = await Player.findOneAndUpdate(
     { email: otherEmail },
     {
-      $addToSet: { ReceiveRequest: myEmail },
+      $push: { AcceptRequest: myEmail },
     }
   );
 
   res.status(200).json({
     status: "success",
     query,
+    otherQuery,
   });
 });
 

@@ -6,7 +6,7 @@ exports.login = catchAsync(async (req, res, next) => {
   const PlayerData = req.body;
 
   const query = await Player.find({ userName: req.body.userName });
-  console.log(PlayerData.password.toString());
+  let email = query[0].email;
   if (query.length === 1) {
     //console.log(query[0].password === PlayerData.password.toString());
     if (query[0].password === PlayerData.password.toString()) {
@@ -16,14 +16,18 @@ exports.login = catchAsync(async (req, res, next) => {
           $set: { session: true },
         }
       );
+      const query = await Player.find({ email: email });
+
       res.cookie(req.body.userName + "=" + req.body.password);
       res.status(200).json({
         status: "success",
+        data: query,
         message: "Login Successfully",
       });
     }
+  } else {
+    return next(new AppError("User does not exist, Sign up", 400));
   }
-  return next(new AppError("User does not exist, Sign up", 400));
 });
 
 exports.protected = catchAsync(async (req, res, next) => {
@@ -33,7 +37,6 @@ exports.protected = catchAsync(async (req, res, next) => {
     index;
   if (token.cookie) {
     index = token.cookie.indexOf("=");
-    //password = token.cookie.split("=")[1];
     for (let i = 0; i < token.cookie.length; i++) {
       if (i < index) userName += token.cookie[i];
       if (i > index) password += token.cookie[i];

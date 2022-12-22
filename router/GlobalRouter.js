@@ -6,7 +6,7 @@ const router = express.Router();
 // Player X result
 router
   .route("/PlayedByX")
-  .get(AuthController.protected, GlobalController.getPlayedByMeResult)
+  .get(GlobalController.getPlayedByMeResult)
   .post(AuthController.protected, GlobalController.postByX);
 
 // Player Y result
